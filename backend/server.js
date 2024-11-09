@@ -8,21 +8,23 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json()); //allows to accept json data in req.body
+app.use(express.json()); //allows to accept json data in req.body (middleware)
 
-app.post("/products",async(req,res)=>{
+
+app.post("/api/products",async(req,res)=>{
     const product= req.body; //user will send this data
     if(!product.name || !product.image || !product.price){
-        return res.status(400).json({sucess:false,message:"please provide all fields"});
+        return res.status(400).json({success:false,message:"please provide all fields"});
     }
     const newProduct= Product(product); //it has name,price,image that we got from user
 
    try{
     await newProduct.save() //save product data from user
+    res.status(201).json({success:true,data:newProduct});
    }
    catch(error){ //to debugg if any error
     console.error("error in creating product:",error.message);
-    res.status(500).json({sucess:true,message:"server created"});
+    res.status(500).json({success:true,message:"server created"});
    }
 });
 
